@@ -11,11 +11,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 
-export const severityEnum = pgEnum("severity", [
-	"critical",
-	"warning",
-	"good",
-]);
+export const severityEnum = pgEnum("severity", ["critical", "warning", "good"]);
 
 export const verdictEnum = pgEnum("verdict", [
 	"needs_serious_help",

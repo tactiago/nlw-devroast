@@ -35,9 +35,7 @@ async function LeaderboardEntryCard({
 						</span>
 					</div>
 					<div className="flex items-center gap-1.5">
-						<span className="font-mono text-xs text-text-tertiary">
-							score:
-						</span>
+						<span className="font-mono text-xs text-text-tertiary">score:</span>
 						<span className="font-mono text-sm font-bold text-accent-red">
 							{score}
 						</span>
