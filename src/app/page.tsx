@@ -27,6 +27,7 @@ const placeholderCode = `function calculateTotal(items) {
 export default function Home() {
 	const [, setCode] = useState(placeholderCode);
 	const [, setLanguage] = useState("javascript");
+	const [overLimit, setOverLimit] = useState(false);
 
 	const handleEditorChange = useCallback((code: string, language: string) => {
 		setCode(code);
@@ -53,6 +54,7 @@ export default function Home() {
 				<CodeEditor
 					defaultValue={placeholderCode}
 					onChange={handleEditorChange}
+					onOverLimit={setOverLimit}
 				/>
 			</div>
 
@@ -63,7 +65,7 @@ export default function Home() {
 						{"// maximum sarcasm enabled"}
 					</span>
 				</div>
-				<Button variant="primary" size="md">
+				<Button variant="primary" size="md" disabled={overLimit}>
 					$ roast_my_code
 				</Button>
 			</div>
