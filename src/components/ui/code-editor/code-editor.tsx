@@ -11,16 +11,24 @@ import { LanguageSelector } from "./language-selector";
 import { useLanguageDetection } from "./use-language-detection";
 import { useShikiHighlighter } from "./use-shiki-highlighter";
 
+const MAX_CHARS = 2500;
+
 type CodeEditorProps = {
 	defaultValue?: string;
 	onChange?: (code: string, language: string) => void;
+	onOverLimit?: (overLimit: boolean) => void;
+	maxChars?: number;
 	minHeight?: number;
+	maxHeight?: number;
 };
 
 function CodeEditor({
 	defaultValue = "",
 	onChange,
+	onOverLimit,
+	maxChars = MAX_CHARS,
 	minHeight = 360,
+	maxHeight = 480,
 }: CodeEditorProps) {
 	const [code, setCode] = useState(defaultValue);
 	const [manualLanguage, setManualLanguage] = useState<string | null>(null);
@@ -47,9 +55,15 @@ function CodeEditor({
 		};
 	}, [code, activeLanguage, highlight]);
 
+	const overLimit = code.length > maxChars;
+
 	useEffect(() => {
 		onChange?.(code, activeLanguage);
 	}, [code, activeLanguage, onChange]);
+
+	useEffect(() => {
+		onOverLimit?.(overLimit);
+	}, [overLimit, onOverLimit]);
 
 	const handleChange = useCallback(
 		(e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -118,8 +132,8 @@ function CodeEditor({
 				/>
 			</div>
 
-			<div className="flex" style={{ minHeight }}>
-				<div className="flex w-12 flex-col items-end border-r border-border-primary bg-bg-surface px-3 py-4">
+			<div className="flex overflow-y-auto" style={{ minHeight, maxHeight }}>
+				<div className="flex w-12 shrink-0 flex-col items-end border-r border-border-primary bg-bg-surface px-3 py-4">
 					{Array.from({ length: lineCount }, (_, i) => {
 						const lineNum = String(i + 1);
 						return (
@@ -133,11 +147,11 @@ function CodeEditor({
 					})}
 				</div>
 
-				<div className="relative flex-1">
+				<div className="grid flex-1 grid-cols-1 grid-rows-1">
 					<div
 						ref={highlightRef}
 						aria-hidden
-						className="pointer-events-none absolute inset-0 overflow-hidden p-4 font-mono text-xs leading-[1.65] [&_code]:!bg-transparent [&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-0"
+						className="pointer-events-none col-start-1 row-start-1 p-4 font-mono text-xs leading-[1.65] [&_code]:!bg-transparent [&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-0"
 						dangerouslySetInnerHTML={{
 							__html: ready ? highlightedHtml : escapeHtml(code),
 						}}
@@ -152,10 +166,18 @@ function CodeEditor({
 						autoCapitalize="off"
 						autoComplete="off"
 						autoCorrect="off"
-						className="relative z-10 h-full w-full resize-none bg-transparent p-4 font-mono text-xs leading-[1.65] text-transparent caret-text-primary outline-none"
+						className="z-10 col-start-1 row-start-1 resize-none bg-transparent p-4 font-mono text-xs leading-[1.65] text-transparent caret-text-primary outline-none"
 						style={{ WebkitTextFillColor: "transparent" }}
 					/>
 				</div>
+			</div>
+
+			<div className="flex items-center justify-end border-t border-border-primary px-4 py-1.5">
+				<span
+					className={`font-mono text-xs ${overLimit ? "text-accent-red" : "text-text-tertiary"}`}
+				>
+					{code.length}/{maxChars}
+				</span>
 			</div>
 		</div>
 	);
