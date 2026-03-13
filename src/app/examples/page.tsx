@@ -88,11 +88,20 @@ export default function ExamplesPage() {
 
 			<section className="space-y-6">
 				<SectionTitle>code_block</SectionTitle>
-				<CodeBlock
-					code={sampleCode}
-					language="javascript"
-					filename="calculate.js"
-				/>
+				<div className="overflow-hidden rounded-lg border border-border-primary bg-bg-input">
+					<div className="flex h-10 items-center gap-3 border-b border-border-primary px-4">
+						<div className="flex items-center gap-2">
+							<span className="size-2.5 rounded-full bg-accent-red" />
+							<span className="size-2.5 rounded-full bg-accent-amber" />
+							<span className="size-2.5 rounded-full bg-accent-green" />
+						</div>
+						<div className="flex-1" />
+						<span className="font-mono text-xs text-text-tertiary">
+							calculate.js
+						</span>
+					</div>
+					<CodeBlock code={sampleCode} language="javascript" />
+				</div>
 			</section>
 
 			<section className="space-y-6">
