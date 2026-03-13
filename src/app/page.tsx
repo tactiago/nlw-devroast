@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CodeEditor } from "@/components/ui/code-editor";
 import { LeaderboardRow } from "@/components/ui/leaderboard-row";
 import { Toggle } from "@/components/ui/toggle";
 
@@ -24,7 +25,14 @@ const placeholderCode = `function calculateTotal(items) {
 }`;
 
 export default function Home() {
-	const [code, setCode] = useState(placeholderCode);
+	const [, setCode] = useState(placeholderCode);
+	const [, setLanguage] = useState("javascript");
+
+	const handleEditorChange = useCallback((code: string, language: string) => {
+		setCode(code);
+		setLanguage(language);
+	}, []);
+
 	return (
 		<div className="flex flex-col items-center gap-8 px-10 py-20">
 			<div className="flex flex-col items-center gap-3">
@@ -41,33 +49,11 @@ export default function Home() {
 				</p>
 			</div>
 
-			<div className="w-full max-w-3xl overflow-hidden rounded-lg border border-border-primary bg-bg-input">
-				<div className="flex h-10 items-center gap-2 border-b border-border-primary px-4">
-					<span className="size-3 rounded-full bg-accent-red" />
-					<span className="size-3 rounded-full bg-accent-amber" />
-					<span className="size-3 rounded-full bg-accent-green" />
-				</div>
-				<div className="flex" style={{ minHeight: 360 }}>
-					<div className="flex w-12 flex-col items-end border-r border-border-primary bg-bg-surface px-3 py-4">
-						{code.split("\n").map((_, i) => {
-							const num = String(i + 1);
-							return (
-								<span
-									key={num}
-									className="font-mono text-xs leading-[1.65] text-text-tertiary"
-								>
-									{num}
-								</span>
-							);
-						})}
-					</div>
-					<textarea
-						value={code}
-						onChange={(e) => setCode(e.target.value)}
-						spellCheck={false}
-						className="flex-1 resize-none bg-transparent p-4 font-mono text-xs leading-[1.65] text-text-primary outline-none placeholder:text-text-muted"
-					/>
-				</div>
+			<div className="w-full max-w-3xl">
+				<CodeEditor
+					defaultValue={placeholderCode}
+					onChange={handleEditorChange}
+				/>
 			</div>
 
 			<div className="flex w-full max-w-3xl items-center justify-between">
