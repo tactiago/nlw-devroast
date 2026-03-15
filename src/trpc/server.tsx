@@ -24,14 +24,23 @@ export function HydrateClient(props: { children: React.ReactNode }) {
 	);
 }
 
-export function prefetch(queryOptions: { queryKey: unknown[] }): void {
+function prefetchOne(queryOptions: { queryKey: unknown[] }): Promise<void> {
 	const queryClient = getQueryClient();
 	const key = queryOptions.queryKey[1] as { type?: string } | undefined;
 	if (key?.type === "infinite") {
-		void queryClient.prefetchInfiniteQuery(queryOptions as never);
-	} else {
-		void queryClient.prefetchQuery(queryOptions as never);
+		return queryClient.prefetchInfiniteQuery(queryOptions as never);
 	}
+	return queryClient.prefetchQuery(queryOptions as never);
+}
+
+export function prefetch(queryOptions: { queryKey: unknown[] }): void {
+	void prefetchOne(queryOptions);
+}
+
+export function prefetchAll(
+	queryOptionsList: Array<{ queryKey: unknown[] }>,
+): Promise<void[]> {
+	return Promise.all(queryOptionsList.map((opts) => prefetchOne(opts)));
 }
 
 export const caller = appRouter.createCaller(createTRPCContext);

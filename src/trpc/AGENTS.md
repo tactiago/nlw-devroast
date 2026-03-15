@@ -28,15 +28,27 @@ src/trpc/
 
 ## Fluxo em Server Components
 
-1. `prefetch(trpc.[router].[procedure].queryOptions())` — inicia o fetch
-2. `HydrateClient` — envolve children com `HydrationBoundary` (dehydrate do queryClient)
-3. Client child usa `useSuspenseQuery(trpc.[router].[procedure].queryOptions())` — lê do cache
+1. `prefetch(trpc.[router].[procedure].queryOptions())` — inicia o fetch (fire-and-forget)
+2. `prefetchAll([...])` — executa múltiplas queries em paralelo com `Promise.all`; usar `await prefetchAll([...])` quando precisar aguardar
+3. `HydrateClient` — envolve children com `HydrationBoundary` (dehydrate do queryClient)
+4. Client child usa `useSuspenseQuery(trpc.[router].[procedure].queryOptions())` — lê do cache
 
 ## Fluxo em Client Components
 
 - `useTRPC()` → `trpc` proxy
 - `useQuery(trpc.[router].[procedure].queryOptions())` ou `useSuspenseQuery(...)`
 - `useMutation(trpc.[router].[procedure].mutationOptions())`
+
+## Prefetch em paralelo
+
+Quando a page precisa de múltiplas queries, usar `prefetchAll` com `await Promise.all` para executar em paralelo:
+
+```ts
+await prefetchAll([
+  trpc.metrics.get.queryOptions(),
+  trpc.submission.leaderboard.queryOptions({ limit: 3 }),
+]);
+```
 
 ## Dados só no servidor (sem cache)
 

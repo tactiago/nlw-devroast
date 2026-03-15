@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CodeEditor } from "@/components/ui/code-editor";
-import { LeaderboardRow } from "@/components/ui/leaderboard-row";
 import { Toggle } from "@/components/ui/toggle";
 
 const placeholderCode = `function calculateTotal(items) {
@@ -26,9 +25,10 @@ const placeholderCode = `function calculateTotal(items) {
 
 type HomeContentProps = {
 	metrics?: React.ReactNode;
+	leaderboard?: React.ReactNode;
 };
 
-export function HomeContent({ metrics }: HomeContentProps) {
+export function HomeContent({ metrics, leaderboard }: HomeContentProps) {
 	const [, setCode] = useState(placeholderCode);
 	const [, setLanguage] = useState("javascript");
 	const [overLimit, setOverLimit] = useState(false);
@@ -103,77 +103,11 @@ export function HomeContent({ metrics }: HomeContentProps) {
 					{"// the worst code on the internet, ranked by shame"}
 				</p>
 
-				<div className="overflow-hidden rounded-lg border border-border-primary">
-					<div className="flex items-center gap-6 bg-bg-surface px-5 py-2.5">
-						<span className="w-12 font-mono text-xs font-medium text-text-tertiary">
-							#
-						</span>
-						<span className="w-16 font-mono text-xs font-medium text-text-tertiary">
-							score
-						</span>
-						<span className="min-w-0 flex-1 font-mono text-xs font-medium text-text-tertiary">
-							code
-						</span>
-						<span className="w-24 text-right font-mono text-xs font-medium text-text-tertiary">
-							lang
-						</span>
-					</div>
-					<LeaderboardRow>
-						<LeaderboardRow.Rank highlight>1</LeaderboardRow.Rank>
-						<LeaderboardRow.Score>1.2</LeaderboardRow.Score>
-						<LeaderboardRow.Code>
-							<LeaderboardRow.CodeLine>
-								{'eval(prompt("enter code"))'}
-							</LeaderboardRow.CodeLine>
-							<LeaderboardRow.CodeLine>
-								document.write(response)
-							</LeaderboardRow.CodeLine>
-							<LeaderboardRow.CodeLine comment>
-								{"// trust the user lol"}
-							</LeaderboardRow.CodeLine>
-						</LeaderboardRow.Code>
-						<LeaderboardRow.Language>javascript</LeaderboardRow.Language>
-					</LeaderboardRow>
-					<LeaderboardRow>
-						<LeaderboardRow.Rank>2</LeaderboardRow.Rank>
-						<LeaderboardRow.Score>1.8</LeaderboardRow.Score>
-						<LeaderboardRow.Code>
-							<LeaderboardRow.CodeLine>
-								{"if (x == true) { return true; }"}
-							</LeaderboardRow.CodeLine>
-							<LeaderboardRow.CodeLine>
-								{"else if (x == false) { return false; }"}
-							</LeaderboardRow.CodeLine>
-							<LeaderboardRow.CodeLine>
-								{"else { return !false; }"}
-							</LeaderboardRow.CodeLine>
-						</LeaderboardRow.Code>
-						<LeaderboardRow.Language>typescript</LeaderboardRow.Language>
-					</LeaderboardRow>
-					<LeaderboardRow>
-						<LeaderboardRow.Rank>3</LeaderboardRow.Rank>
-						<LeaderboardRow.Score>2.1</LeaderboardRow.Score>
-						<LeaderboardRow.Code>
-							<LeaderboardRow.CodeLine>
-								SELECT * FROM users WHERE 1=1
-							</LeaderboardRow.CodeLine>
-							<LeaderboardRow.CodeLine comment>
-								{"-- TODO: add authentication"}
-							</LeaderboardRow.CodeLine>
-						</LeaderboardRow.Code>
-						<LeaderboardRow.Language>sql</LeaderboardRow.Language>
-					</LeaderboardRow>
-				</div>
-
-				<p className="text-center font-mono text-xs text-text-tertiary">
-					{"showing top 3 of 2,847 · "}
-					<Link
-						href="/leaderboard"
-						className="text-text-secondary transition-colors hover:text-text-primary"
-					>
-						{"view full leaderboard >>"}
-					</Link>
-				</p>
+				{leaderboard ?? (
+					<p className="font-mono text-xs text-text-tertiary">
+						{"// loading..."}
+					</p>
+				)}
 			</div>
 		</div>
 	);
