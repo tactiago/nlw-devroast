@@ -51,7 +51,12 @@ function LanguageSelector({
 			</Select.Trigger>
 
 			<Select.Portal>
-				<Select.Positioner side="bottom" align="end" sideOffset={4} className="z-50">
+				<Select.Positioner
+					side="bottom"
+					align="end"
+					sideOffset={4}
+					className="z-50"
+				>
 					<Select.Popup className="max-h-60 overflow-y-auto rounded-lg border border-border-primary bg-bg-surface p-1 shadow-xl">
 						<Select.Item
 							value={AUTO_DETECT_VALUE}

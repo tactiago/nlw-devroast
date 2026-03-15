@@ -2,7 +2,7 @@ import type { ComponentProps } from "react";
 import { tv } from "tailwind-variants";
 
 const leaderboardRow = tv({
-	base: "flex items-center gap-6 border-b border-border-primary px-5 py-4",
+	base: "flex flex-col overflow-hidden border-b border-border-primary",
 });
 
 type LeaderboardRowRootProps = ComponentProps<"div">;
@@ -22,7 +22,7 @@ function LeaderboardRowRank({
 }: LeaderboardRowRankProps) {
 	return (
 		<span
-			className={`w-12 font-mono text-xs ${highlight ? "text-accent-amber" : "text-text-tertiary"} ${className ?? ""}`}
+			className={`font-mono text-sm font-bold ${highlight ? "text-accent-amber" : "text-text-tertiary"} ${className ?? ""}`}
 			{...props}
 		/>
 	);
@@ -36,7 +36,18 @@ function LeaderboardRowScore({
 }: LeaderboardRowScoreProps) {
 	return (
 		<span
-			className={`w-16 font-mono text-xs font-bold text-accent-red ${className ?? ""}`}
+			className={`font-mono text-sm font-bold text-accent-red ${className ?? ""}`}
+			{...props}
+		/>
+	);
+}
+
+type LeaderboardRowMetaProps = ComponentProps<"div">;
+
+function LeaderboardRowMeta({ className, ...props }: LeaderboardRowMetaProps) {
+	return (
+		<div
+			className={`flex h-12 items-center justify-between border-b border-border-primary px-5 ${className ?? ""}`}
 			{...props}
 		/>
 	);
@@ -47,7 +58,7 @@ type LeaderboardRowCodeProps = ComponentProps<"div">;
 function LeaderboardRowCode({ className, ...props }: LeaderboardRowCodeProps) {
 	return (
 		<div
-			className={`flex min-w-0 flex-1 flex-col gap-0.5 ${className ?? ""}`}
+			className={`w-full min-w-0 ${className ?? ""}`}
 			{...props}
 		/>
 	);
@@ -78,13 +89,14 @@ function LeaderboardRowLanguage({
 }: LeaderboardRowLanguageProps) {
 	return (
 		<span
-			className={`w-24 text-right font-mono text-xs text-text-secondary ${className ?? ""}`}
+			className={`font-mono text-xs text-text-secondary ${className ?? ""}`}
 			{...props}
 		/>
 	);
 }
 
 const LeaderboardRow = Object.assign(LeaderboardRowRoot, {
+	Meta: LeaderboardRowMeta,
 	Rank: LeaderboardRowRank,
 	Score: LeaderboardRowScore,
 	Code: LeaderboardRowCode,
@@ -96,6 +108,7 @@ export {
 	LeaderboardRow,
 	leaderboardRow,
 	type LeaderboardRowRootProps,
+	type LeaderboardRowMetaProps,
 	type LeaderboardRowRankProps,
 	type LeaderboardRowScoreProps,
 	type LeaderboardRowCodeProps,
