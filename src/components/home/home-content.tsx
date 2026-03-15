@@ -1,10 +1,13 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CodeEditor } from "@/components/ui/code-editor";
 import { Toggle } from "@/components/ui/toggle";
+import { useTRPC } from "@/trpc/client";
 
 const placeholderCode = `function calculateTotal(items) {
   var total = 0;
@@ -29,14 +32,31 @@ type HomeContentProps = {
 };
 
 export function HomeContent({ metrics, leaderboard }: HomeContentProps) {
-	const [, setCode] = useState(placeholderCode);
-	const [, setLanguage] = useState("javascript");
+	const router = useRouter();
+	const trpc = useTRPC();
+	const [code, setCode] = useState(placeholderCode);
+	const [language, setLanguage] = useState("javascript");
+	const [roastMode, setRoastMode] = useState(true);
 	const [overLimit, setOverLimit] = useState(false);
 
-	const handleEditorChange = useCallback((code: string, language: string) => {
-		setCode(code);
-		setLanguage(language);
-	}, []);
+	const roastMutation = useMutation({
+		...trpc.roast.create.mutationOptions(),
+		onSuccess: (data) => {
+			router.push(`/roast/${data.id}`);
+		},
+	});
+
+	const handleEditorChange = useCallback(
+		(newCode: string, newLanguage: string) => {
+			setCode(newCode);
+			setLanguage(newLanguage);
+		},
+		[],
+	);
+
+	const handleRoast = useCallback(() => {
+		roastMutation.mutate({ code, language, roastMode });
+	}, [code, language, roastMode, roastMutation]);
 
 	return (
 		<div className="flex flex-col items-center gap-8 px-10 py-20">
@@ -62,16 +82,32 @@ export function HomeContent({ metrics, leaderboard }: HomeContentProps) {
 				/>
 			</div>
 
-			<div className="flex w-full max-w-3xl items-center justify-between">
-				<div className="flex items-center gap-4">
-					<Toggle defaultChecked label="roast mode" />
-					<span className="font-mono text-xs text-text-tertiary">
-						{"// maximum sarcasm enabled"}
-					</span>
+			<div className="flex w-full max-w-3xl flex-col gap-2">
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-4">
+						<Toggle
+							checked={roastMode}
+							onCheckedChange={(checked) => setRoastMode(checked === true)}
+							label="roast mode"
+						/>
+						<span className="font-mono text-xs text-text-tertiary">
+							{"// maximum sarcasm enabled"}
+						</span>
+					</div>
+					<Button
+						variant="primary"
+						size="md"
+						disabled={overLimit || roastMutation.isPending}
+						onClick={handleRoast}
+					>
+						{roastMutation.isPending ? "roasting..." : "$ roast_my_code"}
+					</Button>
 				</div>
-				<Button variant="primary" size="md" disabled={overLimit}>
-					$ roast_my_code
-				</Button>
+				{roastMutation.error && (
+					<p className="font-mono text-xs text-accent-red">
+						{roastMutation.error.message}
+					</p>
+				)}
 			</div>
 
 			{metrics ?? (

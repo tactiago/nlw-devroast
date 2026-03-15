@@ -24,8 +24,15 @@ Este app esta sendo construido durante o evento **NLW** da [Rocketseat](https://
 
 ## Como rodar
 
+1. Crie um arquivo `.env` na raiz com:
+   - `DATABASE_URL` — connection string PostgreSQL
+   - `GEMINI_API_KEY` — chave da API Google Gemini (para a análise de código via roast)
+
+2. Execute:
+
 ```bash
 npm install
+npm run db:migrate
 npm run dev
 ```
 
