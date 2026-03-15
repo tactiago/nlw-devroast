@@ -6,6 +6,8 @@ type CodeBlockProps = {
 };
 
 async function CodeBlock({ code, language = "typescript" }: CodeBlockProps) {
+	"use cache";
+
 	const html = await codeToHtml(code.trim(), {
 		lang: language,
 		theme: "vesper",

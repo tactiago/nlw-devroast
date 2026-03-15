@@ -7,12 +7,14 @@ type CodeBlockClientProps = {
 	code: string;
 	language?: string;
 	className?: string;
+	variant?: "default" | "leaderboard";
 };
 
 export function CodeBlockClient({
 	code,
 	language = "typescript",
 	className,
+	variant = "default",
 }: CodeBlockClientProps) {
 	const { highlight, ready } = useShikiHighlighter();
 	const [html, setHtml] = useState("");
@@ -32,40 +34,46 @@ export function CodeBlockClient({
 		String(i + 1),
 	);
 
+	const isLeaderboard = variant === "leaderboard";
+	const lineNumbersCn = isLeaderboard
+		? "flex w-10 flex-col items-end gap-1.5 border-r border-border-primary bg-bg-surface px-2.5 py-3.5"
+		: "flex flex-col border-r border-border-primary bg-bg-surface px-2.5 py-3";
+	const lineNumCn = isLeaderboard
+		? "font-mono text-xs leading-none text-text-tertiary"
+		: "text-right font-mono text-[13px] leading-[1.6] text-text-tertiary";
+	const codeCn = isLeaderboard
+		? "flex-1 overflow-x-auto px-4 py-3.5 text-left font-mono text-xs leading-relaxed"
+		: "flex-1 overflow-x-auto p-3 text-left font-mono text-[13px] leading-[1.6]";
+	const codeHighlightCn = isLeaderboard
+		? "flex-1 overflow-x-auto px-4 py-3.5 text-left font-mono text-xs leading-relaxed [&_pre]:!bg-transparent [&_pre]:!text-left [&_code]:!bg-transparent [&_code]:!text-left"
+		: "flex-1 overflow-x-auto p-3 text-left font-mono text-[13px] leading-[1.6] [&_pre]:!bg-transparent [&_pre]:!text-left [&_code]:!bg-transparent [&_code]:!text-left";
+
 	if (!ready && !html) {
 		return (
 			<div className={`flex w-full min-w-0 ${className ?? ""}`}>
-				<div className="flex flex-col border-r border-border-primary bg-bg-surface px-2.5 py-3">
+				<div className={lineNumbersCn}>
 					{lineNumbers.map((num) => (
-						<span
-							key={num}
-							className="text-right font-mono text-[13px] leading-[1.6] text-text-tertiary"
-						>
+						<span key={num} className={lineNumCn}>
 							{num}
 						</span>
 					))}
 				</div>
-				<pre className="flex-1 overflow-x-auto p-3 text-left font-mono text-[13px] leading-[1.6] text-text-primary">
-					{code}
-				</pre>
+				<pre className={`${codeCn} text-text-primary`}>{code}</pre>
 			</div>
 		);
 	}
 
 	return (
 		<div className={`flex w-full min-w-0 ${className ?? ""}`}>
-			<div className="flex flex-col border-r border-border-primary bg-bg-surface px-2.5 py-3">
+			<div className={lineNumbersCn}>
 				{lineNumbers.map((num) => (
-					<span
-						key={num}
-						className="text-right font-mono text-[13px] leading-[1.6] text-text-tertiary"
-					>
+					<span key={num} className={lineNumCn}>
 						{num}
 					</span>
 				))}
 			</div>
 			<div
-				className="flex-1 overflow-x-auto p-3 text-left font-mono text-[13px] leading-[1.6] [&_pre]:!bg-transparent [&_pre]:!text-left [&_code]:!bg-transparent [&_code]:!text-left"
+				className={codeHighlightCn}
 				dangerouslySetInnerHTML={{ __html: html || "" }}
 			/>
 		</div>

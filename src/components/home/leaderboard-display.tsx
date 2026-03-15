@@ -6,10 +6,18 @@ import { LeaderboardCodeCell } from "@/components/home/leaderboard-code-cell";
 import { LeaderboardRow } from "@/components/ui/leaderboard-row";
 import { useTRPC } from "@/trpc/client";
 
-export function LeaderboardDisplay() {
+type LeaderboardDisplayProps = {
+	limit?: number;
+	showViewAllLink?: boolean;
+};
+
+export function LeaderboardDisplay({
+	limit = 3,
+	showViewAllLink = true,
+}: LeaderboardDisplayProps) {
 	const trpc = useTRPC();
 	const { data: leaderboard } = useSuspenseQuery(
-		trpc.submission.leaderboard.queryOptions({ limit: 3 }),
+		trpc.submission.leaderboard.queryOptions({ limit }),
 	);
 	const { data: metrics } = useQuery(trpc.metrics.get.queryOptions());
 	const totalCount = metrics?.roastedCount ?? 0;
@@ -17,44 +25,68 @@ export function LeaderboardDisplay() {
 	return (
 		<>
 			<div className="overflow-hidden rounded-lg border border-border-primary">
-				<div className="flex items-center gap-6 bg-bg-surface px-5 py-2.5">
-					<span className="w-12 font-mono text-xs font-medium text-text-tertiary">
-						#
-					</span>
-					<span className="w-16 font-mono text-xs font-medium text-text-tertiary">
-						score
-					</span>
-					<span className="ml-auto w-24 text-right font-mono text-xs font-medium text-text-tertiary">
-						lang
-					</span>
+				<div className="flex h-12 items-center justify-between border-b border-border-primary bg-bg-surface px-5">
+					<div className="flex items-center gap-4">
+						<span className="font-mono text-xs text-text-tertiary">#</span>
+						<span className="font-mono text-xs text-text-tertiary">score:</span>
+					</div>
+					<span className="font-mono text-xs text-text-tertiary">lang</span>
 				</div>
-				{leaderboard.map((item) => (
-					<LeaderboardRow key={item.id}>
-						<LeaderboardRow.Meta>
-							<LeaderboardRow.Rank highlight={item.rank === 1}>
-								{item.rank}
-							</LeaderboardRow.Rank>
-							<LeaderboardRow.Score>{item.score}</LeaderboardRow.Score>
-							<LeaderboardRow.Language>{item.language}</LeaderboardRow.Language>
-						</LeaderboardRow.Meta>
-						<LeaderboardRow.Code>
-							<LeaderboardCodeCell
-								code={item.code}
-								language={item.language}
-							/>
-						</LeaderboardRow.Code>
-					</LeaderboardRow>
-				))}
+				{leaderboard.map((item) => {
+					const lineCount = item.code.trim().split("\n").length;
+					return (
+						<LeaderboardRow key={item.id}>
+							<LeaderboardRow.Meta>
+								<div className="flex items-center gap-4">
+									<div className="flex items-center gap-1.5">
+										<span className="font-mono text-xs text-text-tertiary">
+											#
+										</span>
+										<LeaderboardRow.Rank highlight={item.rank === 1}>
+											{item.rank}
+										</LeaderboardRow.Rank>
+									</div>
+									<div className="flex items-center gap-1.5">
+										<span className="font-mono text-xs text-text-tertiary">
+											score:
+										</span>
+										<LeaderboardRow.Score>{item.score}</LeaderboardRow.Score>
+									</div>
+								</div>
+								<div className="flex items-center gap-3">
+									<LeaderboardRow.Language>
+										{item.language}
+									</LeaderboardRow.Language>
+									<span className="font-mono text-xs text-text-tertiary">
+										{lineCount}{" "}
+										{lineCount === 1 ? "line" : "lines"}
+									</span>
+								</div>
+							</LeaderboardRow.Meta>
+							<LeaderboardRow.Code>
+								<LeaderboardCodeCell
+									code={item.code}
+									language={item.language}
+								/>
+							</LeaderboardRow.Code>
+						</LeaderboardRow>
+					);
+				})}
 			</div>
 
 			<p className="text-center font-mono text-xs text-text-tertiary">
-				{`showing top 3 of ${totalCount} · `}
-				<Link
-					href="/leaderboard"
-					className="text-text-secondary transition-colors hover:text-text-primary"
-				>
-					{"view full leaderboard >>"}
-				</Link>
+				{`showing top ${leaderboard.length} of ${totalCount}`}
+				{showViewAllLink && (
+					<>
+						{" · "}
+						<Link
+							href="/leaderboard"
+							className="text-text-secondary transition-colors hover:text-text-primary"
+						>
+							{"view full leaderboard >>"}
+						</Link>
+					</>
+				)}
 			</p>
 		</>
 	);

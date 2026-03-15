@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { HomeContent } from "@/components/home/home-content";
 import { LeaderboardDisplay } from "@/components/home/leaderboard-display";
@@ -6,7 +7,10 @@ import { MetricsDisplay } from "@/components/home/metrics-display";
 import { MetricsSkeleton } from "@/components/home/metrics-skeleton";
 import { HydrateClient, prefetchAll, trpc } from "@/trpc/server";
 
-export default async function Home() {
+async function CachedHomeContent() {
+	"use cache";
+	cacheLife("hours");
+
 	await prefetchAll([
 		trpc.metrics.get.queryOptions(),
 		trpc.submission.leaderboard.queryOptions({ limit: 3 }),
@@ -28,4 +32,8 @@ export default async function Home() {
 			/>
 		</HydrateClient>
 	);
+}
+
+export default async function Home() {
+	return <CachedHomeContent />;
 }

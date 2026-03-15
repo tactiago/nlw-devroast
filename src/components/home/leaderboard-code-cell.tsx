@@ -16,12 +16,13 @@ export function LeaderboardCodeCell({ code, language }: LeaderboardCodeCellProps
 				className="data-panel-open:hidden flex w-full cursor-pointer outline-none"
 				nativeButton
 			>
-				<div className="relative w-full overflow-hidden rounded border border-border-primary bg-bg-input">
+				<div className="relative w-full overflow-hidden border border-border-primary bg-bg-input">
 					<div className="max-h-[120px] overflow-hidden">
 						<CodeBlockClient
 							code={code}
 							language={language}
 							className="w-full min-w-0"
+							variant="leaderboard"
 						/>
 					</div>
 					<div
@@ -37,7 +38,7 @@ export function LeaderboardCodeCell({ code, language }: LeaderboardCodeCellProps
 				</div>
 			</Collapsible.Trigger>
 			<Collapsible.Panel
-				className="overflow-hidden rounded border border-border-primary bg-bg-input"
+				className="overflow-hidden border border-border-primary bg-bg-input"
 				keepMounted
 			>
 				<div className="flex w-full flex-col">
@@ -45,6 +46,7 @@ export function LeaderboardCodeCell({ code, language }: LeaderboardCodeCellProps
 						code={code}
 						language={language}
 						className="w-full min-w-0"
+						variant="leaderboard"
 					/>
 					<div className="flex justify-center border-t border-border-primary py-2">
 						<Collapsible.Trigger
