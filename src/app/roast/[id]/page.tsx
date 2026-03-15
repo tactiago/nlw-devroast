@@ -6,10 +6,52 @@ import { IssueCard } from "@/components/ui/issue-card";
 import { ScoreRing } from "@/components/ui/score-ring";
 import { caller } from "@/trpc/server";
 
-export const metadata: Metadata = {
-	title: "Roast Results | Dev Roast",
-	description: "Your code has been roasted. See the results.",
+type Props = {
+	params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { id } = await params;
+	const roast = await caller.roast.getById({ id });
+
+	if (!roast) {
+		return {
+			title: "Roast Results | Dev Roast",
+		};
+	}
+
+	const description =
+		roast.roastQuote.length > 120
+			? `${roast.roastQuote.slice(0, 117)}...`
+			: roast.roastQuote;
+
+	const baseUrl = process.env.VERCEL_URL
+		? `https://${process.env.VERCEL_URL}`
+		: (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000");
+
+	return {
+		title: "Roast Results | Dev Roast",
+		description,
+		openGraph: {
+			title: "Roast Results | Dev Roast",
+			description,
+			images: [
+				{
+					url: `${baseUrl}/api/og/roast/${id}`,
+					width: 1200,
+					height: 630,
+					alt: `Roast score: ${roast.score}/10 - ${roast.verdict}`,
+				},
+			],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: "Roast Results | Dev Roast",
+			description,
+			images: [`${baseUrl}/api/og/roast/${id}`],
+		},
+	};
+}
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
 	return (
