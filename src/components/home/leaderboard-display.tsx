@@ -24,26 +24,25 @@ export function LeaderboardDisplay() {
 					<span className="w-16 font-mono text-xs font-medium text-text-tertiary">
 						score
 					</span>
-					<span className="min-w-0 flex-1 font-mono text-xs font-medium text-text-tertiary">
-						code
-					</span>
-					<span className="w-24 text-right font-mono text-xs font-medium text-text-tertiary">
+					<span className="ml-auto w-24 text-right font-mono text-xs font-medium text-text-tertiary">
 						lang
 					</span>
 				</div>
 				{leaderboard.map((item) => (
 					<LeaderboardRow key={item.id}>
-						<LeaderboardRow.Rank highlight={item.rank === 1}>
-							{item.rank}
-						</LeaderboardRow.Rank>
-						<LeaderboardRow.Score>{item.score}</LeaderboardRow.Score>
+						<LeaderboardRow.Meta>
+							<LeaderboardRow.Rank highlight={item.rank === 1}>
+								{item.rank}
+							</LeaderboardRow.Rank>
+							<LeaderboardRow.Score>{item.score}</LeaderboardRow.Score>
+							<LeaderboardRow.Language>{item.language}</LeaderboardRow.Language>
+						</LeaderboardRow.Meta>
 						<LeaderboardRow.Code>
 							<LeaderboardCodeCell
 								code={item.code}
 								language={item.language}
 							/>
 						</LeaderboardRow.Code>
-						<LeaderboardRow.Language>{item.language}</LeaderboardRow.Language>
 					</LeaderboardRow>
 				))}
 			</div>

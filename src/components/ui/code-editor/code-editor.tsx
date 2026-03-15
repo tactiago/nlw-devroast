@@ -53,7 +53,7 @@ function CodeEditor({
 		return () => {
 			cancelled = true;
 		};
-	}, [code, activeLanguage, highlight]);
+	}, [code, activeLanguage, highlight, ready]);
 
 	const overLimit = code.length > maxChars;
 

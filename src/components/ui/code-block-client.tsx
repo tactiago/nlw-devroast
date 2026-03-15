@@ -25,7 +25,7 @@ export function CodeBlockClient({
 		return () => {
 			cancelled = true;
 		};
-	}, [code, language, highlight]);
+	}, [code, language, highlight, ready]);
 
 	const lineCount = code.trim().split("\n").length;
 	const lineNumbers = Array.from({ length: lineCount }, (_, i) =>
@@ -34,7 +34,7 @@ export function CodeBlockClient({
 
 	if (!ready && !html) {
 		return (
-			<div className={`flex ${className ?? ""}`}>
+			<div className={`flex w-full min-w-0 ${className ?? ""}`}>
 				<div className="flex flex-col border-r border-border-primary bg-bg-surface px-2.5 py-3">
 					{lineNumbers.map((num) => (
 						<span
@@ -45,7 +45,7 @@ export function CodeBlockClient({
 						</span>
 					))}
 				</div>
-				<pre className="flex-1 overflow-x-auto p-3 font-mono text-[13px] leading-[1.6] text-text-primary">
+				<pre className="flex-1 overflow-x-auto p-3 text-left font-mono text-[13px] leading-[1.6] text-text-primary">
 					{code}
 				</pre>
 			</div>
@@ -53,7 +53,7 @@ export function CodeBlockClient({
 	}
 
 	return (
-		<div className={`flex ${className ?? ""}`}>
+		<div className={`flex w-full min-w-0 ${className ?? ""}`}>
 			<div className="flex flex-col border-r border-border-primary bg-bg-surface px-2.5 py-3">
 				{lineNumbers.map((num) => (
 					<span
@@ -65,7 +65,7 @@ export function CodeBlockClient({
 				))}
 			</div>
 			<div
-				className="flex-1 overflow-x-auto p-3 font-mono text-[13px] leading-[1.6] [&_pre]:!bg-transparent [&_code]:!bg-transparent"
+				className="flex-1 overflow-x-auto p-3 text-left font-mono text-[13px] leading-[1.6] [&_pre]:!bg-transparent [&_pre]:!text-left [&_code]:!bg-transparent [&_code]:!text-left"
 				dangerouslySetInnerHTML={{ __html: html || "" }}
 			/>
 		</div>

@@ -11,28 +11,51 @@ type LeaderboardCodeCellProps = {
 
 export function LeaderboardCodeCell({ code, language }: LeaderboardCodeCellProps) {
 	return (
-		<Collapsible.Root defaultOpen={false} className="min-w-0 flex-1">
+		<Collapsible.Root defaultOpen={false} className="w-full min-w-0">
 			<Collapsible.Trigger
-				className="group flex w-full cursor-pointer flex-col gap-1 text-left outline-none"
+				className="data-panel-open:hidden flex w-full cursor-pointer outline-none"
 				nativeButton
 			>
-				<div className="max-h-[120px] overflow-hidden rounded border border-border-primary bg-bg-input group-data-panel-open:hidden">
-					<CodeBlockClient code={code} language={language} />
+				<div className="relative w-full overflow-hidden rounded border border-border-primary bg-bg-input">
+					<div className="max-h-[120px] overflow-hidden">
+						<CodeBlockClient
+							code={code}
+							language={language}
+							className="w-full min-w-0"
+						/>
+					</div>
+					<div
+						className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-bg-input to-transparent"
+						aria-hidden
+					/>
+					<div className="absolute inset-x-0 bottom-0 flex justify-center py-2">
+						<span className="flex items-center gap-1.5 rounded bg-bg-input/80 px-3 py-1 font-mono text-xs text-text-tertiary backdrop-blur-sm">
+							expand
+							<ChevronDown className="size-3" />
+						</span>
+					</div>
 				</div>
-				<span className="flex items-center gap-1 font-mono text-xs text-text-tertiary group-data-panel-open:hidden">
-					expand
-					<ChevronDown className="size-3" />
-				</span>
-				<span className="hidden items-center gap-1 font-mono text-xs text-text-tertiary group-data-panel-open:flex">
-					collapse
-					<ChevronUp className="size-3" />
-				</span>
 			</Collapsible.Trigger>
 			<Collapsible.Panel
 				className="overflow-hidden rounded border border-border-primary bg-bg-input"
 				keepMounted
 			>
-				<CodeBlockClient code={code} language={language} />
+				<div className="flex w-full flex-col">
+					<CodeBlockClient
+						code={code}
+						language={language}
+						className="w-full min-w-0"
+					/>
+					<div className="flex justify-center border-t border-border-primary py-2">
+						<Collapsible.Trigger
+							className="flex cursor-pointer items-center gap-1.5 font-mono text-xs text-text-tertiary outline-none transition-colors hover:text-text-secondary"
+							nativeButton
+						>
+							collapse
+							<ChevronUp className="size-3" />
+						</Collapsible.Trigger>
+					</div>
+				</div>
 			</Collapsible.Panel>
 		</Collapsible.Root>
 	);

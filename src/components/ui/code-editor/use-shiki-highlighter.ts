@@ -23,19 +23,23 @@ function useShikiHighlighter() {
 					import("shiki/engine/javascript"),
 				]);
 
-			const [vesper, javascript, typescript, python] = await Promise.all([
-				import("shiki/themes/vesper.mjs"),
-				import("shiki/langs/javascript.mjs"),
-				import("shiki/langs/typescript.mjs"),
-				import("shiki/langs/python.mjs"),
-			]);
+			const [vesper, javascript, typescript, python, go, c, sql] =
+				await Promise.all([
+					import("shiki/themes/vesper.mjs"),
+					import("shiki/langs/javascript.mjs"),
+					import("shiki/langs/typescript.mjs"),
+					import("shiki/langs/python.mjs"),
+					import("shiki/langs/go.mjs"),
+					import("shiki/langs/c.mjs"),
+					import("shiki/langs/sql.mjs"),
+				]);
 
 			if (cancelled) return;
 
 			const highlighter = await createHighlighterCore({
 				engine: createJavaScriptRegexEngine(),
 				themes: [vesper],
-				langs: [javascript, typescript, python],
+				langs: [javascript, typescript, python, go, c, sql],
 			});
 
 			if (cancelled) return;

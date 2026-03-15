@@ -2,7 +2,7 @@ import type { ComponentProps } from "react";
 import { tv } from "tailwind-variants";
 
 const leaderboardRow = tv({
-	base: "flex items-center gap-6 border-b border-border-primary px-5 py-4",
+	base: "flex flex-col gap-0 border-b border-border-primary pt-4 pb-0",
 });
 
 type LeaderboardRowRootProps = ComponentProps<"div">;
@@ -42,12 +42,23 @@ function LeaderboardRowScore({
 	);
 }
 
+type LeaderboardRowMetaProps = ComponentProps<"div">;
+
+function LeaderboardRowMeta({ className, ...props }: LeaderboardRowMetaProps) {
+	return (
+		<div
+			className={`flex items-center gap-6 px-5 mb-2 ${className ?? ""}`}
+			{...props}
+		/>
+	);
+}
+
 type LeaderboardRowCodeProps = ComponentProps<"div">;
 
 function LeaderboardRowCode({ className, ...props }: LeaderboardRowCodeProps) {
 	return (
 		<div
-			className={`flex min-w-0 flex-1 flex-col gap-0.5 ${className ?? ""}`}
+			className={`w-full min-w-0 ${className ?? ""}`}
 			{...props}
 		/>
 	);
@@ -78,13 +89,14 @@ function LeaderboardRowLanguage({
 }: LeaderboardRowLanguageProps) {
 	return (
 		<span
-			className={`w-24 text-right font-mono text-xs text-text-secondary ${className ?? ""}`}
+			className={`ml-auto w-24 text-right font-mono text-xs text-text-secondary ${className ?? ""}`}
 			{...props}
 		/>
 	);
 }
 
 const LeaderboardRow = Object.assign(LeaderboardRowRoot, {
+	Meta: LeaderboardRowMeta,
 	Rank: LeaderboardRowRank,
 	Score: LeaderboardRowScore,
 	Code: LeaderboardRowCode,
@@ -96,6 +108,7 @@ export {
 	LeaderboardRow,
 	leaderboardRow,
 	type LeaderboardRowRootProps,
+	type LeaderboardRowMetaProps,
 	type LeaderboardRowRankProps,
 	type LeaderboardRowScoreProps,
 	type LeaderboardRowCodeProps,
