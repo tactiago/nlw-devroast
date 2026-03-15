@@ -26,10 +26,16 @@ UI components live in `src/components/ui/`. See `src/components/ui/AGENTS.md` fo
 - Simple components (variants via `tv()`, named exports)
 - Composition pattern (sub-components via `Object.assign` for dot notation)
 
+## API / Data Fetching
+
+- **tRPC** como camada de API (TanStack React Query). Ver `src/trpc/AGENTS.md` para detalhes.
+- Server Components por padrão; prefetch + HydrateClient para SSR.
+- Suspense + skeleton para loading states.
+- Client Components quando necessário (ex.: NumberFlow para animação de números).
+
 ## Key Rules
 
 - Always named exports, never `export default` (except Next.js pages)
 - Server Components by default; `"use client"` only when needed
-- Static data for now — no API connections
 - Navbar is in `src/app/layout.tsx` (shared across all pages)
 - Page content uses `max-w` + `mx-auto` for centered layout
